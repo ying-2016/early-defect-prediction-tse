@@ -1104,6 +1104,10 @@ def run_early_bellwether(projectName):
         performPredictionRunner(projectName, early_bell_changes.copy(deep=True), testReleaseObj.getChanges(),
                                 str(len(early_bell_changes)), testReleaseObj.getReleaseDate(), 'E_B')
 
+
+
+
+
 def test_all_releases(projectName):
 
     print("Appending prediction evaluations for ", projectName, ' to ',
@@ -1114,14 +1118,25 @@ def test_all_releases(projectName):
     """
     run_early(projectName)
     run_early_2(projectName)
-    run_all(projectName)
+    # run_all(projectName)
 
     """
     CPDP
     """
     run_bellwether(projectName)
     run_early_bellwether_2(projectName)
+
     run_tca(projectName, BELLWETHER_PROJECT)
+
+    """
+    Finding bellwethers (ALL pairs)    
+    """
+
+    for p in getProjectNames():
+        run_all_pairs(p)
+
+
+
 
 def resultExists(p):
     filePath = './'+RESULTS_FOLDER+'/project_' + p + "_results.csv"
@@ -1189,8 +1204,147 @@ def run_early_bellwether_2(projectName):
                                 str(len(early_bell_changes)), testReleaseObj.getReleaseDate(), 'E_B_2' , None, 'size')
 
 
+def removeExistingFiles():
 
-if __name__ == "__main__":
+    print("Attemping to remove existing results")
+
+    for table in ['table4', 'table5']:
+        for metric in METRICS_LIST:
+            filetoremove = './output/' + table + '/z' + metric + '.txt'
+            try:
+                if path.exists(filetoremove):
+                    try:
+                        os.remove(filetoremove)
+                        print('Existing ', filetoremove,  ' removed!')
+                    except Exception as e:
+                        print('[ERROR] : Unable to remove ',filetoremove, str(e))
+            except:
+                continue
+
+def get_common_releases(df, samplingPolicies):
+
+    releaseList = []
+
+
+    for samplingPolicy in samplingPolicies:
+
+        samplingReleaseList  = df[ df['trainApproach'] == samplingPolicy ]['testReleaseDate'].values.tolist()
+        # print(samplingPolicy, len(samplingReleaseList))
+        if samplingReleaseList is None or len(samplingReleaseList) == 0:
+            return []
+        else:
+            releaseList.append(samplingReleaseList)
+
+    testReleaseSet = None
+
+    for releases in releaseList:
+
+        if testReleaseSet is None:
+
+            testReleaseSet = list(set(releases))
+            continue
+
+        else:
+
+           testReleaseSet =  list( set(testReleaseSet) & set(releases) )
+
+
+
+    return testReleaseSet
+
+
+def to_pretty_label(selRule):
+    return selRule
+
+
+def collect_inputs_for_measures(metric, projectStartDateMap):
+
+    for table in ['table4']:
+
+        if table == 'table4':
+            samplingPolicies = []
+            samplingPolicies.append('B_scikit-learn')
+            samplingPolicies.append('E_B_scikit-learn_2')
+
+            samplingPolicies.append('T_scikit-learn')
+            samplingPolicies.append('E_F2_T2_scikit-learn')
+
+            samplingPolicies.append('E')
+            samplingPolicies.append('E_2')
+
+        elif table == 'table5':
+
+            samplingPolicies = []
+
+            for bellwether_project in   ['django-payments', 'restheart', 'apollo', 'sauce-java', 'portia', 'opendht', 'dogapi', 'midpoint',
+             'active_merchant', 'zulip', 'woboq_codebrowser', 'pry']:
+
+                samplingPolicies.append(bellwether_project+'_ALL_CHANGES')
+                samplingPolicies.append(bellwether_project + '_E_CHANGES')
+
+        f = open('./output/'+table+'/z' + metric  + '.txt', "a+")
+
+        print("Generating ",'./output/'+table+'/z' + metric  + '.txt')
+
+        for classifier in getSimpleNames():
+
+            for selRule in  samplingPolicies:
+
+                metricValues = []
+
+                for p in getProjectNames():
+
+                    df = pd.read_csv('./output/project_' + p + '_results.csv')
+                    df = df[(df['test_changes'] > 5) & (df['d2h'] != 'CLF_ERROR')]
+
+                    # sixmonths = projectStartDateMap[p] + (6 * one_month )
+                    # df = df[ df['testReleaseDate'] > sixmonths ]
+
+                    df = df[ df['classifier'] == classifier ]
+
+                    commonReleases = get_common_releases(df, samplingPolicies)
+
+                    if len(df) > 0:
+                        sDF = df[ (df['testReleaseDate'].isin(commonReleases) ) & ( df['trainApproach'] == selRule ) ]
+                    else:
+                        continue
+
+                    v = sDF[metric].values.tolist()
+
+                    metricValues += v
+
+
+                f.write(to_pretty_label(selRule) + "_" + classifier + "\n")
+                line = ''
+                for c in metricValues:
+
+                    line += str(c) + " "
+
+                f.write(line.strip() + "\n\n")
+
+def generate_scottknott_inputs():
+
+    removeExistingFiles()
+
+    projectStartDateMap = {}
+
+    for p in getProjectNames():
+        rrs = getProject(p).getReleases()
+        projectStartDateMap[p] = min([r.getStartDate() for r in rrs])
+
+    procs = []
+
+    for metric in METRICS_LIST:
+        proc = Process(target=collect_inputs_for_measures(metric, projectStartDateMap), args=(metric,))
+        procs.append(proc)
+        proc.start()
+
+    # Complete the processes
+    for proc in procs:
+        proc.join()
+
+
+def generate_project_results():
 
     procs = []
     for name in getProjectNames():
@@ -1200,6 +1354,9 @@ if __name__ == "__main__":
 
     for proc in procs:
         proc.join()
+
+
+
 
 
 

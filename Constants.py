@@ -17,7 +17,7 @@ CONSIDER_FIRST_X_RELEASES = math.inf
 
 E_TRAIN_LIMIT = 150
 
-METRICS_LIST = ['recall', 'pf', 'gm', 'd2h',   'ifa',  'roc_auc', 'brier']
+METRICS_LIST = ['recall', 'pf', 'g-score', 'd2h',   'ifa',  'roc_auc', 'brier']
 
 NUM_RELEASES_TO_CONSIDER = math.inf
 MIN_NUM_FILES_PER_RELEASE = 2

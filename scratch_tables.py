@@ -64,9 +64,7 @@ def splitPolicyText(samplingPolicy):
     classifier = spArr[len(spArr) - 1]
 
     selRule = samplingPolicy.replace('_' + classifier, '')
-    selRule = selRule.replace('RECENT_RELEASE', 'RR')
-    selRule = selRule.replace('150_25_25', 'E')
-    selRule = selRule.replace('RESAMPLE_', '')
+
 
     return selRule, classifier
 
@@ -194,4 +192,3 @@ def run(fileName, measuresCSVPath):
 if __name__ == '__main__':
     print("Generating")
     run('TableIV', './output/table4/scratch_table4_')
-    run('TableV', './output/table5/scratch_table5_')

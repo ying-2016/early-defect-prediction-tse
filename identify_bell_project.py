@@ -222,20 +222,20 @@ def run_all_pairs(target_project):
                 if 'Early' in RESULTS_FOLDER and (test_release.getStartDate() - start) > 2 * one_year and processed > 2:
                     print("Not Breaking!")
             try:
-                if True: # not alreadyRan(cross_project, target_project, test_release.getReleaseDate()):
-                    if 'Early' in RESULTS_FOLDER:
-                        performPredictionRunner(target_project, early_cross_changes.copy(deep=True),
-                                    test_release.getChanges().copy(deep=True), 'NA', test_release.getReleaseDate(), cross_project+'_E_CHANGES' ,None, 'size')
-                        processed += 1
-                    else:
-                        performPredictionRunner(target_project, cross_all.copy(deep=True),
-                                                test_release.getChanges().copy(deep=True), 'NA',
-                                                test_release.getReleaseDate(), cross_project + '_ALL_CHANGES', None)
+
+                if 'Early' in RESULTS_FOLDER:
+                    performPredictionRunner(target_project, early_cross_changes.copy(deep=True),
+                                test_release.getChanges().copy(deep=True), 'NA', test_release.getReleaseDate(), cross_project+'_E_CHANGES' ,None, 'size')
+                    processed += 1
+                else:
+                    performPredictionRunner(target_project, cross_all.copy(deep=True),
+                                            test_release.getChanges().copy(deep=True), 'NA',
+                                            test_release.getReleaseDate(), cross_project + '_ALL_CHANGES', None)
 
 
                 # print("ALL_PAIRS NEW TIME", goodtime.time())
             except Exception as e:
-                traceback.print_exc()
+                # traceback.print_exc()
                 print("Error processing release ", target_project, cross_project, test_release.getReleaseDate(), e)
 
 
