@@ -18,7 +18,7 @@ TBD
 1. $ `cd early-defect-prediction-tse`
 1. $ `pip3 install -r requirements.txt`
 
-## Follow the steps in the screenshot (below):
+## Follow the steps 4 to 1 (fastest to slowest) to reproduce Table IV (results) of paper:
 
 <img src="https://github.com/snaraya7/early-defect-prediction-tse/blob/master/images/scratch.PNG" width="900">
 
