@@ -26,3 +26,7 @@ TBD
 
 #### Project csv's are available [here](https://github.com/snaraya7/early-defect-prediction-tse/tree/master/data) and its associated release csv's are available [here](https://github.com/snaraya7/early-defect-prediction-tse/tree/master/data/releases)
 
+### Other details
+1. Portions of code and data transferred from prior [study](https://ieeexplore.ieee.org/abstract/document/9401968) and [SAIL](https://sailhome.cs.queensu.ca/replication/featred-vs-featsel-defectpred/) for TCA+ related code
+ 
+
