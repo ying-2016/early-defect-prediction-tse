@@ -1,8 +1,6 @@
 # [Paper: The Early Bird Catches the Worm: Better Early Life Cycle  Defect Predictors](paper.pdf) 
 
-<img src="transfer.png" width="350">
-
-TBD
+<img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/The_Early_Bird..._%28165702619%29.jpg" width="250">
 
 # Replication:
 
