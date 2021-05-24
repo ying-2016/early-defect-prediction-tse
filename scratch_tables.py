@@ -69,10 +69,47 @@ def splitPolicyText(samplingPolicy):
     return selRule, classifier
 
 
+def toPretty(policy):
+
+    ppolicy = []
+
+    for p in policy:
+
+        if p.startswith('E_2'):
+            ppolicy.append(p.replace('E_2','E+'))
+
+
+
+        elif p.startswith('B_scikit-learn'):
+            ppolicy.append(p.replace('B_scikit-learn', 'Bellwether'))
+
+        elif p.startswith('T_scikit-learn'):
+            ppolicy.append(p.replace('T_scikit-learn', 'TCA+'))
+
+        elif p.startswith('E_B_scikit-learn_2'):
+            ppolicy.append(p.replace('E_B_scikit-learn_2', 'E+_Bellwether'))
+
+
+        elif p.startswith('E_F2_T2_scikit-learn'):
+            ppolicy.append(p.replace('E_F2_T2_scikit-learn', 'E+_TCA+'))
+
+        elif p.startswith('E'):
+            ppolicy.append(p.replace('E', 'E'))
+
+        else:
+            ppolicy.append(p)
+
+    return ppolicy
+
+
+
+
 def generateTable(measuresCSVPath, fileName, sortedMap):
+
     aggRank = 1
 
     policy = []
+
     rank = []
 
     d2h = []
@@ -140,23 +177,26 @@ def generateTable(measuresCSVPath, fileName, sortedMap):
 
     df = pd.DataFrame()
 
+    policy = toPretty(policy)
+
     df['Policy'] = policy
     df['Classifier'] = classifiers
     df['Wins'] = frequency
-
-    df['D2H'] = d2h
-
-    df['AUC'] = auc
-
-    df['IFA'] = ifa
-
-    df['Brier'] = brier
 
     df['Recall'] = recall
 
     df['PF'] = pf
 
+    df['AUC'] = auc
+
+    df['D2H'] = d2h
+
+    df['Brier'] = brier
+
     df['GM'] = gscore
+
+    df['IFA'] = ifa
+
 
     df = df.sort_values(['Wins', 'Recall', 'PF'], ascending=False)
     df.to_csv('scratch_'+fileName + '.csv', index=False)
@@ -192,3 +232,4 @@ def run(fileName, measuresCSVPath):
 if __name__ == '__main__':
     print("Generating")
     run('TableIV', './output/table4/scratch_table4_')
+

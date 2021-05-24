@@ -42,7 +42,7 @@ POPULAR_PROJECTS = ['ActionBarSherlock', 'active_merchant', 'ajenti', 'android',
 UNPOPULAR_PROJECTS =  ['make-snake', 'snorocket', 'BigQuery-Python', 'pienoon', 'geoserver-manager', 'brackets-app', 'Ushahidi_Android', 'B2BProfessional', 'iron_mq_java', 'deepin-boot-maker', 'GloboNetworkAPI-client-python', 'travis.rb', 'mailjet-gem', 'sauce-java', 'qa-tools', 'woboq_codebrowser', 'ripe.atlas.sagan', 'whiteboard', 'redpotion', 'django-payments', 'dogapi', 'snp-pipeline', 'azure-sdk-for-media-services', 'lob-ruby', 'sputnik', 'analytics-java', 'radosgw-agent', 'Trooper', 'nRF51-ble-bcast-mesh', 'puppetlabs-powershell', 'napa', 'aminator', 'java-util', 'mod_dup', 'tigon', 'portico', 'libgdiplus', 'olingo-odata2', 'Slice', 'deepin-movie', 'cocaine-plugins', 'KDSoap', 'GloboDNS', 'oasp4j', 'pivotal_workstation', 'apptentive-android', 'pymel', 'gazebo-yarp-plugins', 'intellij-pants-plugin', 'KunstmaanGeneratorBundle', 'compute-image-packages', 'recog', 'silverstripe-elemental', 'projecta', 'supplejack_api', 'Galicaster', 'MDK', 'parameter-framework', 'serengeti-ws', 'restheart', 'mcsema', 'AsTeRICS', 'opendht', 'azure-linux-extensions', 'picketlink', 'imeji', 'codyco-modules', 'yandex-tank', 'bitmask_client', 'stripe-java', 'libwebp', 'waterbutler', 'opencms-core', 'agg-sharp', 'hrpsys-base', 'narayana', 'tatami', 'PerfKitBenchmarker', 'SalesforceMobileSDK-Android', 'odemis', 'onadata', 'MatterControl', 'midpoint', 'origin-server', 'indico', 'server']
 
 def getProjectNames():
-    return POPULAR_PROJECTS + UNPOPULAR_PROJECTS
+    return   POPULAR_PROJECTS + UNPOPULAR_PROJECTS
 
 
 """

@@ -256,14 +256,41 @@ def computeMeasures(test_df, clf, timeRow, codeChurned):
     except:
         F['d2h'] = [errorMessage]
 
+    # try:
+    #     F['accuracy'] = [abcd.calculate_accuracy() * -1 ]
+    # except:
+    #     F['accuracy'] = [errorMessage]
+    #
+    #
+    # print('warn')
+
+
+
     try:
         F['pci_20'] =  [1]
     except Exception as e:
         F['pci_20'] = [errorMessage]
 
     try:
+
+        # tempPredicted = predicted
+        # temptest_y = test_y.values.tolist()
+        # initialFalseAlarm = 0
+        #
+        # for i in range(0, len(tempPredicted)):
+        #
+        #     if tempPredicted[i] == True and temptest_y[i] == False:
+        #         initialFalseAlarm += 1
+        #     elif not tempPredicted[i]:
+        #         continue
+        #     elif tempPredicted[i] == True and temptest_y[i] == True:
+        #         break
+        #
+        # F['ifa'] = [initialFalseAlarm]
+
         F['ifa'] = [abcd.get_ifa()]
-    except:
+    except Exception as e:
+    #     print('\t ',errorMessage)
         F['ifa'] = [errorMessage]
 
     try:
@@ -350,10 +377,10 @@ def getSimpleNames():
 def getHeader():
 
     header = ['projectName', 'trainApproach', 'trainReleaseDate', 'testReleaseDate', 'train_changes', 'test_changes',
-              'train_Bug_Per', 'test_Bug_Per', 'features_selected', 'classifier', 'featureSelector', 'SMOTE', 'SMOTE_time', 'test_time', 'train_time', 'goal_score']
+              'train_Bug_Per', 'test_Bug_Per', 'features_selected', 'classifier', 'featureSelector', 'SMOTE',
+              'SMOTE_time', 'test_time', 'train_time', 'goal_score']
 
     header += METRICS_LIST
-
 
     return header
 
@@ -834,7 +861,6 @@ def performPredictionRunner(projectName, originalTrainChanges, originalTestChang
                         try:
                             clf.fit(trainX, trainY)
                         except Exception as e:
-                            print('fitting error!! ',e)
                             continue
 
                         spl = ''
@@ -1010,15 +1036,15 @@ def run_tca(projectName, bell_project):
 
             performPredictionRunner(projectName, more_train_changes.copy(deep=True), testChanges.copy(deep=True),
                                     str(len(more_train_changes)),
-                                    testReleaseObj.getReleaseDate(), 'T_' + str(bell_project_index(bell_project)))
+                                    testReleaseObj.getReleaseDate(), 'TCA+')
 
 
             performPredictionRunner(projectName, early_trainChanges.copy(deep=True), testChanges.copy(deep=True), str(len(early_trainChanges)),
-                                    testReleaseObj.getReleaseDate(), 'E_F2_T2_' + str(bell_project_index(bell_project)),
+                                    testReleaseObj.getReleaseDate(), 'E+_TCA+' ,
                                     None, 'size')
 
-            performPredictionRunner(projectName, early_trainChanges.copy(deep=True), testChanges.copy(deep=True), str(len(early_trainChanges)),
-                                    testReleaseObj.getReleaseDate(), 'E_T2_' + str(bell_project_index(bell_project)))
+            # performPredictionRunner(projectName, early_trainChanges.copy(deep=True), testChanges.copy(deep=True), str(len(early_trainChanges)),
+            #                         testReleaseObj.getReleaseDate(), 'E_T2_' + str(bell_project_index(bell_project)))
 
         except Exception as e:
             print('TCAPLUS EXCEPTION : ', e)
@@ -1030,7 +1056,23 @@ def validTrainRegion(trainingRegion):
 
 
 
+def convert(v, metric):
+    vv= []
 
+    if v is not None:
+
+        for vvv in v:
+
+            try:
+                converted = float(vvv)
+                if str(converted).lower() != 'nan':
+                    vv.append(converted)
+                elif metric in ['g-score', 'gm']:
+                    vv.append(0)
+            except:
+                continue
+
+    return vv
 
 
 def run_multiple_bellwether(projectName, type=None):
@@ -1113,27 +1155,21 @@ def test_all_releases(projectName):
     print("Appending prediction evaluations for ", projectName, ' to ',
           str(os.getcwd()) + "/output/" + projectName + '.csv')
 
+    writeRow(getFileName(projectName), getHeader())
+
     """
     WPDP
     """
     run_early(projectName)
     run_early_2(projectName)
-    # run_all(projectName)
 
     """
     CPDP
     """
     run_bellwether(projectName)
     run_early_bellwether_2(projectName)
-
     run_tca(projectName, BELLWETHER_PROJECT)
 
-    """
-    Finding bellwethers (ALL pairs)    
-    """
-
-    for p in getProjectNames():
-        run_all_pairs(p)
 
 
 
@@ -1186,7 +1222,7 @@ def run_early_2(projectName):
         # testReleaseStartDate = None, retainFew = None, tuneChanges = None, returnResults = False
 
         performPredictionRunner(projectName, early_changes.copy(deep=True), testReleaseObj.getChanges(),
-                                str(len(train_changes)), testReleaseObj.getReleaseDate(), 'E_2', None, 'size')
+                                str(len(train_changes)), testReleaseObj.getReleaseDate(), 'E+', None, 'size')
 
 def run_early_bellwether_2(projectName):
 
@@ -1201,7 +1237,7 @@ def run_early_bellwether_2(projectName):
 
     for testReleaseObj in testReleaseList:
         performPredictionRunner(projectName, early_bell_changes.copy(deep=True), testReleaseObj.getChanges(),
-                                str(len(early_bell_changes)), testReleaseObj.getReleaseDate(), 'E_B_2' , None, 'size')
+                                str(len(early_bell_changes)), testReleaseObj.getReleaseDate(), 'E_B_+' , None, 'size')
 
 
 def removeExistingFiles():
@@ -1311,6 +1347,7 @@ def collect_inputs_for_measures(metric, projectStartDateMap):
 
                     v = sDF[metric].values.tolist()
 
+                    v = convert(v, metric)
                     metricValues += v
 
 
@@ -1334,7 +1371,7 @@ def generate_scottknott_inputs():
 
     procs = []
 
-    for metric in METRICS_LIST:
+    for metric in ['recall', 'pf', 'g-score', 'roc_auc', 'd2h', 'ifa', 'brier']:
         proc = Process(target=collect_inputs_for_measures(metric, projectStartDateMap), args=(metric,))
         procs.append(proc)
         proc.start()

@@ -1,3 +1,6 @@
+import csv
+from os import path
+
 import tca
 import DCV
 from data_manager import *
@@ -49,23 +52,30 @@ def apply_tcaplus(train_data, test_data, dimensions):
     if rule==1:
         train_data_std = train_data
         test_data_std = test_data
-        print("rule 1")
+        # print("rule 1")
     elif rule==2:
         train_data_std, test_data_std = preparation.standardization_SVL(train_data,test_data,"0-1scale")
-        print("rule 2")
+        # print("rule 2")
     elif rule==3:
         train_data_std, test_data_std = preparation.standardization_rule3(train_data,test_data)
-        print("rule 3")
+        # print("rule 3")
     elif rule==4:
         train_data_std, test_data_std = preparation.standardization_rule4(train_data,test_data)
-        print("rule 4")
+        # print("rule 4")
     else:
         train_data_std, test_data_std = preparation.standardization_SVL(train_data,test_data,"z-score")
-        print("rule 5")
+        # print("rule 5")
 
     flag = 0
     for train_row in train_data_std:
         for ele in train_row:
+
+            try:
+                float(ele)
+            except Exception:
+                flag = 1
+                break
+
             if math.isnan(ele):
                 flag = 1
                 break
@@ -79,6 +89,12 @@ def apply_tcaplus(train_data, test_data, dimensions):
 
     for test_row in test_data_std:
         for ele in test_row:
+            try:
+                float(ele)
+            except Exception:
+                flag = 1
+                break
+
             if math.isnan(ele):
                 flag = 1
                 break
@@ -97,7 +113,7 @@ def apply_tcaplus(train_data, test_data, dimensions):
     # print("Test data", train_data_std)
     # print("something", something)
 
-    print(type(train_data_std), type(test_data_std))
+    # print(type(train_data_std), type(test_data_std))
 
     train_df = pd.DataFrame(data=train_data_std,   columns=['Col_' + str(x) for x in range(0, dimensions)])
     train_df['Buggy'] = train_bugs
