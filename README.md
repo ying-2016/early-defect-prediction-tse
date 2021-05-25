@@ -8,11 +8,12 @@
 
 * Linux Terminal
 * python 2.7.5 and python 3.6.7
-* Git support
+* Git support with lfs
 
 ### On your Linux terminal
 
-1. $ `git clone https://github.com/snaraya7/early-defect-prediction-tse.git`
+1. $ `git lfs install`
+1. $ `git lfs clone https://github.com/snaraya7/early-defect-prediction-tse.git`
 1. $ `cd early-defect-prediction-tse`
 1. $ `pip3 install -r requirements.txt`
 
