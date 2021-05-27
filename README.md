@@ -4,6 +4,9 @@
 
 # Replication:
 
+### Alternate download (clone):
+If you face issues with GitHub/LFS you may download the entire project source zip from [here](https://drive.google.com/drive/folders/19s5W2W_ZsO94Z5aomhwFxCyap9Q9Y_Le?usp=sharing)
+
 ## Prerequisites
 
 * Linux Terminal
